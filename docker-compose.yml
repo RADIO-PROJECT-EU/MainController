@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  influxdb:
+    image: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    volumes:
+      - ./config/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - influxdata:/var/lib/influxdb/data/
+
+  telegraf:
+    image: telegraf
+    ports:
+      - "8094:8094"
+    volumes:
+      - ./config/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+
+  grafana:
+    image: grafana/grafana
+    links:
+      - "influxdb:influxsrv"
+    ports:
+      - "3000:3000"
+    environment:
+      - HTTP_USER=admin
+      - HTTP_PASS=admin
+    depends_on:
+      - influxdb
+
+volumes:
+  influxdata:
