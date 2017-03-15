@@ -22,8 +22,6 @@ services:
 
   grafana:
     image: grafana/grafana
-    links:
-      - "influxdb:influxsrv"
     ports:
       - "3000:3000"
     environment:
